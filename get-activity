@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Note: The activity has to be owned by the authenticated user. Since
+# we're not doing OAuth, that means the user who owns the API key.
+activity_id=872890465
+
+
+curl -G https://www.strava.com/api/v3/activities/$activity_id -d access_token=$ACCESS_TOKEN -d resource_state=3 > activity.json
+
+for type in time latlng distance velocity_smooth altitude; do
+	curl -G https://www.strava.com/api/v3/activities/$activity_id/streams/$type -d access_token=$ACCESS_TOKEN -d resource_state=3 > $type.json
+done
