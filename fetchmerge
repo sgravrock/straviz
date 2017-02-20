@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+import sys
+import grequests
+import json
+
+def getconfig():
+	with open("straviz.json") as f:
+		return json.load(f)
+
+def stream_url(stream_name, activity_id, access_token):
+	return "https://www.strava.com/api/v3/activities/%s/streams/%s?access_token=%s&resource_state=3" % (activity_id, stream_name, access_token)
+
+def ensure_successes(responses):
+	for r in responses:
+		if r is None or r.status_code != 200:
+			sys.stderr.write("Fail\n")
+			exit(1)
+
+def merge(responses):
+	result = {}
+	for r in responses:
+		parsed = r.json()
+		result[parsed[0]['type']] = parsed
+	return result
+
+
+if len(sys.argv) != 2:
+	sys.stderr.write("Usage: %s activity-id\n" % sys.argv[0])
+	exit(1)
+
+activity_id = sys.argv[1]
+access_token = getconfig()['access_token']
+urls = (stream_url(s, activity_id, access_token)
+	for s in ["time", "latlng", "distance", "velocity_smooth", "altitude"])
+requests = (grequests.get(u) for u in urls)
+responses = grequests.map(requests)
+ensure_successes(responses)
+result = merge(responses)
+print(result)
