@@ -19,7 +19,8 @@ def merge(responses):
 	result = {}
 	for r in responses:
 		parsed = r.json()
-		result[parsed[0]['type']] = parsed
+		for stream in parsed:
+			result[stream['type']] = parsed
 	return result
 
 form = cgi.FieldStorage()
