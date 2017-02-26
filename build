@@ -14,6 +14,7 @@ sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.html > target/index.html
 node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
 cp src/boot.js target
 
-cp fetchmerge.cgi straviz.json target
+mkdir -p target/cgi-bin
+cp fetchmerge.cgi straviz.json target/cgi-bin
 
 jshint src/*.js test/spec/*.js 

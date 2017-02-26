@@ -7,7 +7,6 @@ os.chdir('target')
 
 PORT = 8000
 handler = http.server.CGIHTTPRequestHandler
-handler.cgi_directories = ['/']
 
 with http.server.HTTPServer(("", PORT), handler) as httpd:
 	httpd.serve_forever()
