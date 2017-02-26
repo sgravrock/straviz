@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+import os
 import http.server
-import socketserver
+
+os.chdir('target')
 
 PORT = 8000
 handler = http.server.CGIHTTPRequestHandler
