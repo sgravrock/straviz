@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<head>
+	<title>Minibikemaps</title>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.7.0/metricsgraphics.min.css">
+	<style>
+		#map { height: 400px; }
+		.thumbnail #map {
+			width: 500px;
+			height: 500px;
+		}
+		.thumbnail .plot-wrapper { display: none; }
+		.plot-wrapper { display: flex; }
+		.y-label {
+			flex: 0;
+			margin-top: 75px;
+			margin-right: 25px;
+			/* Match metricsgraphics X axis label font */
+			font-size: 12.8px;
+			opacity: 0.6;
+			text-transform: uppercase;
+		}
+		#plot { flex: 1; }
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+	<div class="plot-wrapper">
+		<div class="y-label">Elevation<br>(meters)</div>
+		<div id="plot" style="height: 200px"></div>
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.2.1/metricsgraphics.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key={{MAPS-APIKEY}}"></script>
+	<script src="minibikemaps.js"></script>
+	<script src="boot.js"></script>
+</body>

@@ -1,2 +1,6 @@
-straviz.json
-venv
+/straviz.json
+/maps-apikey
+/venv
+/node_modules
+/target
+*.sw?

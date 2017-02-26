@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+die() {
+	echo $1 1>&2
+	exit 1
+}
+
+[ -f maps-apikey ] || die "Put your Google Maps API key in maps-apikey."
+apikey=`tr -d '\n' < maps-apikey`
+[ -z "$apikey" ] && die "Put your Google Maps API key in maps-apikey."
+[ -f node_modules/.bin/browserify ] || npm update
+mkdir -p target
+sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.html > target/index.html
+node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
+cp src/boot.js target
+
+jshint src/*.js test/spec/*.js 
