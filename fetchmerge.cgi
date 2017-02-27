@@ -35,7 +35,7 @@ if "activity" not in form:
 activity_id = form["activity"].value
 access_token = getconfig()['access_token']
 urls = [stream_url(s, activity_id, access_token)
-	for s in ["time", "latlng", "distance", "velocity_smooth", "altitude"]]
+	for s in ["time", "latlng", "velocity_smooth", "altitude"]]
 requests = (grequests.get(u) for u in urls)
 # TODO: attach an error handler as well to handle cases where the response
 # will be None
