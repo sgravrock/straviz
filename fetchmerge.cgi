@@ -3,7 +3,12 @@
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.getcwd(), "lib"))
+
+# Devserver and real web servers set the current directory differently.
+if os.path.exists("cgi-bin/fetchmerge.cgi"):
+	os.chdir("cgi-bin")
+
+sys.path.insert(0, os.path.join(os.getcwd(), "../lib"))
 import grequests
 import json
 import cgi
