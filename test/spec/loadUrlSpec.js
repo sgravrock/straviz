@@ -9,10 +9,10 @@ describe("loadUrl", function () {
 		};
 
 		spyOn(window, "XMLHttpRequest").and.returnValue(xhr);
-		promise = loadUrl("somefile.xml");
+		promise = loadUrl("someurl");
 	});
 
-	it("should return an unresolved promise", function (done) {
+	it("returns an unresolved promise", function (done) {
 		var handler = jasmine.createSpy("handler");
 		promise.then(handler, handler);
 		return new Promise(function (resolve, reject) {
@@ -23,21 +23,21 @@ describe("loadUrl", function () {
 		});
 	});
 
-	it("should get the requested URL", function () {
-		expect(xhr.open).toHaveBeenCalledWith("get", "somefile.xml");
+	it("gets the requested URL", function () {
+		expect(xhr.open).toHaveBeenCalledWith("get", "someurl");
 		expect(xhr.send).toHaveBeenCalled();
 	});
 
-	describe("When the response is a valid XML file", function () {
+	describe("When the request succeeds with a 200 response", function () {
 		beforeEach(function () {
 			xhr.status = 200;
-			xhr.responseXML = {};
+			xhr.responseText = "the response";
 			xhr.onload();
 		});
 
-		it("should resolve the promise to the response XML", function () {
+		it("resolves the promise to the response text", function () {
 			return promise.then(function (result) {
-				expect(result).toBe(xhr.responseXML);
+				expect(result).toEqual("the response");
 			});
 		});
 	});

@@ -18,30 +18,26 @@ describe("App", function () {
 		graphRoot.id = "graph";
 		document.body.appendChild(graphRoot);
 		subject = new App(loader, mapRegion, graphSelector);
-		startPromise = subject.start("http://example.com/sometrack.xml");
+		startPromise = subject.start("12345");
 	});
 
 	afterEach(function () {
 		document.body.removeChild(graphRoot);
 	});
 
-	it("should load the specified URL", function () {
-		expect(loader).toHaveBeenCalledWith("http://example.com/sometrack.xml");
+	it("should load the specified activity", function () {
+		expect(loader).toHaveBeenCalled();
+		expect(loader.calls.argsFor(0)[0]).toMatch(/cgi-bin\/fetchmerge.cgi\?activity=12345/);
 	});
 
 	describe("When the request succeeds", function () {
 		beforeEach(function () {
-			var track = '<trkseg>' +
-				'<trkpt lat="47.62" lon="-122.351">' +
-					'<ele>15.1</ele>' + 
-					'<time>2015-03-28T00:49:11Z</time>' +
-				'</trkpt>' +
-				'<trkpt lat="47.598" lon="-122.33">' +
-					'<ele>8.2</ele>' +
-					'<time>2015-03-28T00:56:11Z</time>' +
-				'</trkpt>' +
-			'</trkseg>';
-			loadDeferred.resolve(specHelper.wrapGpx(track));
+			var response = {
+				time: [205, 625],
+				latlng: [[47.62, -122.351], [47.598, -122.33]],
+				altitude: [15.1, 8.2]
+			};
+			loadDeferred.resolve(JSON.stringify(response));
 			return startPromise;
 		});
 

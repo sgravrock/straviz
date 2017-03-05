@@ -7,7 +7,7 @@
 		this._graphSelector = graphSelector;
 	};
 
-	App.prototype.start = function (url) {
+	App.prototype.start = function (activityId) {
 		var that = this;
 		var isThumbnail = window.location.search.indexOf("view=thumbnail") !== -1;
 
@@ -15,14 +15,14 @@
 			document.body.classList.add("thumbnail");
 		}
 
-		return that._loader(url)
+		return that._loader("cgi-bin/fetchmerge.cgi?activity=" + activityId)
 			.catch(function (error) {
 				that._mapRegion.classList.add("error");
 				that._mapRegion.innerText = "Could not load " + url + ".";
 				return Promise.reject(error);
 			})
-			.then(function (xmlDoc) {
-				var track = readGpx(xmlDoc);
+			.then(function (json) {
+				var track = readStreams(JSON.parse(json));
 				that.showMap(track, isThumbnail);
 				that.showElevationGraph(track);
 				that.showSpeedGraph(track);
@@ -150,7 +150,7 @@
 
 			xhr.onload = function () {
 				if (xhr.status === 200) {
-					resolve(xhr.responseXML);
+					resolve(xhr.responseText);
 				} else {
 					reject("Unable to load " + url + ": " + xhr.status + " " + xhr.statusText);
 				}
@@ -250,24 +250,23 @@
 
 		for (i = 1; i < points.length; i++) {
 			prev = previousSpeedPoint(points, i);
-			hours = (points[i].time - prev.time) / (1000 * 60 * 60);
+			hours = (points[i].time - prev.time) / (60 * 60);
 			rawSpeed = (points[i].distance - prev.distance) / hours;
 			points[i].speed = filter.filter(rawSpeed);
 		}
 	};
 
-	window.readGpx = function (xmlDoc) {
-		var trkpts = xmlDoc.querySelectorAll("trkpt");
-		var points = Array.prototype.map.call(trkpts, function (trkpt, i) {
-			var elNode = trkpt.querySelector("ele");
-			var timeNode = trkpt.querySelector("time");
-			return {
-				lat: parseFloat(trkpt.getAttribute("lat")),
-				lon: parseFloat(trkpt.getAttribute("lon")),
-				elevation: parseFloat(elNode.childNodes[0].data),
-				time: timeNode ? Date.parse(timeNode.childNodes[0].data) : null
-			};
-		});
+	window.readStreams = function (streams) {
+		var points = [];
+
+		for (i = 0; i < streams.time.length; i++) {
+			points.push({
+				lat: streams.latlng[i][0],
+				lon: streams.latlng[i][1],
+				elevation: streams.altitude[i],
+				time: streams.time[i]
+			});
+		}
 
 		calculateDistances(points);
 		calculateSpeed(points);
