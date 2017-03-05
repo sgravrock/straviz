@@ -28,3 +28,5 @@ For deployment under a real web server (nginx, apache, whatever), do this.
 7. Run the dev server: $ ./devserver
 
 8. Visit http://localhost:8000/cgi-bin/fetchmerge.cgi?activity=<an activity ID>
+
+9. Deploy somewhere: $ ./deploy user@host:path
