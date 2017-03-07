@@ -16,7 +16,7 @@
 			document.body.classList.add("thumbnail");
 		}
 
-		return that._loader("cgi-bin/fetchmerge.cgi?activity=" + activityId)
+		return that._loader("fetchmerge.cgi?activity=" + activityId)
 			.catch(function (error) {
 				that._mapRegion.classList.add("error");
 				that._mapRegion.innerText = "Could not load " + url + ".";

@@ -33,7 +33,7 @@ describe("App", function () {
 
 	it("should load the specified activity", function () {
 		expect(loader).toHaveBeenCalled();
-		expect(loader.calls.argsFor(0)[0]).toMatch(/cgi-bin\/fetchmerge.cgi\?activity=12345/);
+		expect(loader.calls.argsFor(0)[0]).toMatch(/fetchmerge.cgi\?activity=12345/);
 	});
 
 	describe("When the request succeeds", function () {

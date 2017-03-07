@@ -10,7 +10,7 @@ sshdest=$(echo "$scpdest" | sed 's/:.*//')
 destdir=$(echo "$scpdest" | sed 's/.*://')
 
 cd target
-chmod 600 cgi-bin/straviz.json
+chmod 600 straviz.json
 scp -r . "$scpdest"
 cd ..
 scp requirements.txt "$scpdest"

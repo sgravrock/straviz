@@ -3,10 +3,14 @@
 import os
 import http.server
 
+class Handler(http.server.CGIHTTPRequestHandler):
+	def is_cgi(self):
+		return super().is_cgi() and ".cgi" in self.path
+
 os.chdir('target')
 
 PORT = 8000
-handler = http.server.CGIHTTPRequestHandler
+http.server.CGIHTTPRequestHandler.cgi_directories = ['/']
 
-with http.server.HTTPServer(("", PORT), handler) as httpd:
+with http.server.HTTPServer(("", PORT), Handler) as httpd:
 	httpd.serve_forever()
