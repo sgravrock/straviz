@@ -1,6 +1,7 @@
 describe("App", function () {
 	"use strict";
-	var subject, loader, loadDeferred, mapRegion, graphSelector, startPromise, map, graphRoot;
+	var subject, loader, loadDeferred, mapRegion, eleSelector, speedSelector,
+			startPromise, map, eleRoot, speedRoot;
 
 	var Deferred = function () {
 		this.promise = new Promise(function (resolve, reject) {
@@ -13,16 +14,21 @@ describe("App", function () {
 		loadDeferred = new Deferred();
 		loader = jasmine.createSpy("loader").and.returnValue(loadDeferred.promise);
 		mapRegion = document.createElement("div");
-		graphSelector = "#graph";
-		graphRoot = document.createElement("div");
-		graphRoot.id = "graph";
-		document.body.appendChild(graphRoot);
-		subject = new App(loader, mapRegion, graphSelector);
+		eleSelector = "#ele-graph";
+		eleRoot = document.createElement("div");
+		eleRoot.id = "ele-graph";
+		document.body.appendChild(eleRoot);
+		speedSelector = "#speed-graph";
+		speedRoot = document.createElement("div");
+		speedRoot.id = "speed-graph";
+		document.body.appendChild(speedRoot);
+		subject = new App(loader, mapRegion, eleSelector, speedSelector);
 		startPromise = subject.start("12345");
 	});
 
 	afterEach(function () {
-		document.body.removeChild(graphRoot);
+		document.body.removeChild(eleRoot);
+		document.body.removeChild(speedRoot);
 	});
 
 	it("should load the specified activity", function () {
@@ -68,7 +74,7 @@ describe("App", function () {
 		it("should show an elevation plot", function () {
 			var config = MG.configs[0];
 			expect(config).toBeTruthy("Elevation plot wasn't created");
-			expect(config.target).toEqual("#graph .elevation");
+			expect(config.target).toEqual("#ele-graph");
 			expect(config.x_accessor).toEqual("distance");
 			expect(config.y_accessor).toEqual("elevation");
 			expect(config.data.length).toEqual(2);
@@ -81,7 +87,7 @@ describe("App", function () {
 		it("should show a speed plot", function () {
 			var config = MG.configs[1];
 			expect(config).toBeTruthy("Speed plot wasn't created");
-			expect(config.target).toEqual("#graph .speed");
+			expect(config.target).toEqual("#speed-graph");
 			expect(config.x_accessor).toEqual("distance");
 			expect(config.y_accessor).toEqual("speed");
 			expect(config.data.length).toEqual(2);

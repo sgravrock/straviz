@@ -1,10 +1,11 @@
 (function () {
 	require("es6-promise").polyfill(); // for phantomjs
 
-	window.App = function (loader, mapRegion, graphSelector) {
+	window.App = function (loader, mapRegion, elevationSelector, speedSelector) {
 		this._loader = loader;
 		this._mapRegion = mapRegion;
-		this._graphSelector = graphSelector;
+		this._elevationSelector = elevationSelector;
+		this._speedSelector = speedSelector;
 	};
 
 	App.prototype.start = function (activityId) {
@@ -44,16 +45,13 @@
 	};
 
 	App.prototype.showElevationGraph = function (track) {
-		var target = document.createElement("div");
-		target.className = "elevation";
-		document.querySelector(this._graphSelector).appendChild(target);
 		MG.data_graphic({
 			data: track.points,
 			height: 150,
 			full_width: true,
 			area: false,
 			left: 100,
-			target: this._graphSelector + " .elevation",
+			target: this._elevationSelector,
 			x_accessor: "distance",
 			x_label: "Distance (miles)",
 			y_accessor: "elevation",
@@ -66,18 +64,15 @@
 	};
 
 	App.prototype.showSpeedGraph = function (track) {
-		var target = document.createElement("div");
-		target.className = "speed";
-		document.querySelector(this._graphSelector).appendChild(target);
 		MG.data_graphic({
 			data: track.points,
 			height: 150,
 			full_width: true,
 			area: false,
 			left: 100,
-			target: this._graphSelector + " .speed",
+			target: this._speedSelector,
 			x_accessor: "distance",
-			x_label: "Speed (MPH)",
+			x_label: "Distance (miles)",
 			y_accessor: "speed",
 			interpolate: "monotone",
 			linked: true,
