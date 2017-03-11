@@ -3,15 +3,17 @@
 
 import sys
 import os
+import cgi
+import configparser
+import json
 
 sys.path.insert(0, os.path.join(os.getcwd(), "lib"))
 import grequests
-import json
-import cgi
 
 def getconfig():
-	with open("straviz.json") as f:
-		return json.load(f)
+	config = configparser.ConfigParser()
+	config.read("straviz.ini")
+	return config
 
 def stream_url(stream_name, activity_id, access_token):
 	return "https://www.strava.com/api/v3/activities/%s/streams/%s?access_token=%s&resource_state=3" % (activity_id, stream_name, access_token)
@@ -34,7 +36,7 @@ if "activity" not in form:
 	exit()
 
 activity_id = form["activity"].value
-access_token = getconfig()['access_token']
+access_token = getconfig().get('straviz', 'access_token')
 urls = [stream_url(s, activity_id, access_token)
 	for s in ["time", "latlng", "velocity_smooth", "altitude"]]
 requests = (grequests.get(u) for u in urls)

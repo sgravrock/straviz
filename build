@@ -13,6 +13,6 @@ mkdir -p target
 sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.tmpl > target/index.tmpl
 node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
 
-cp index.cgi fetchmerge.cgi straviz.json target
+cp index.cgi fetchmerge.cgi straviz.ini target
 
 jshint src/*.js test/spec/*.js 

@@ -1,16 +1,12 @@
 #!/bin/sh -e
 
-if [ -z "$1" ]; then
-	echo Usage: $0 scp-dest 1>&2
-	exit 1
-fi
-
-scpdest=$1
+scpdest=`./get-deploy-dest`
 sshdest=$(echo "$scpdest" | sed 's/:.*//')
 destdir=$(echo "$scpdest" | sed 's/.*://')
 
+echo Deploying to $scpdest
 cd target
-chmod 600 straviz.json
+chmod 600 straviz.ini
 scp -r . "$scpdest"
 cd ..
 scp requirements.txt "$scpdest"

@@ -1,4 +1,4 @@
-<Files "straviz.json">
+<Files "straviz.ini">
 Order Allow,Deny
 Deny from all
 </Files>

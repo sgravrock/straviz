@@ -13,20 +13,18 @@ For deployment under a real web server (nginx, apache, whatever), do this.
 
 	$ pip3 install -r requirements.txt -t lib
 
-3. Obtain a Strava access token and store it in straviz.json, like so:
+3. Copy EXAMPLE-straviz.ini to straviz.ini.
 
-	{
-		"access_token": "your access token goes here"
-	}
+4. Obtain a Strava access token and store it in straviz.ini.
 
-4. Obtain a Google Maps API key and store it in maps-apikey.
+5. Obtain a Google Maps API key and store it in maps-apikey.
 
-5. Build everything: $ ./build
+6. Build everything: $ ./build
 
-6. Run the Jasmine tests by opening test/SpecRunner.html in a browser.
+7. Run the Jasmine tests by opening test/SpecRunner.html in a browser.
 
-7. Run the dev server: $ ./devserver
+8. Run the dev server: $ ./devserver
 
-8. Visit http://localhost:8000/cgi-bin/fetchmerge.cgi?activity=<an activity ID>
+9. Visit http://localhost:8000/cgi-bin/fetchmerge.cgi?activity=<an activity ID>
 
-9. Deploy somewhere: $ ./deploy user@host:path
+10. To deploy via SCP, set deploy_dest in straviz.ini and run this: $ ./deploy
