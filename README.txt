@@ -17,7 +17,7 @@ For deployment under a real web server (nginx, apache, whatever), do this.
 
 4. Obtain a Strava access token and store it in straviz.ini.
 
-5. Obtain a Google Maps API key and store it in maps-apikey.
+5. Obtain a Google Maps API key and store it in straviz.ini
 
 6. Build everything: $ ./build
 

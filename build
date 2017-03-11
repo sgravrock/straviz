@@ -5,12 +5,9 @@ die() {
 	exit 1
 }
 
-[ -f maps-apikey ] || die "Put your Google Maps API key in maps-apikey."
-apikey=`tr -d '\n' < maps-apikey`
-[ -z "$apikey" ] && die "Put your Google Maps API key in maps-apikey."
 [ -f node_modules/.bin/browserify ] || npm update
 mkdir -p target
-sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.tmpl > target/index.tmpl
+cp src/index.tmpl target/index.tmpl
 node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
 
 cp index.cgi fetchmerge.cgi straviz.ini target
