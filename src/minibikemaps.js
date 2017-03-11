@@ -27,6 +27,7 @@
 				that.showMap(track, isThumbnail);
 				that.showElevationGraph(track);
 				that.showSpeedGraph(track);
+				document.body.classList.add("loaded");
 			})
 			.catch(function (error) {
 				console.error(error);

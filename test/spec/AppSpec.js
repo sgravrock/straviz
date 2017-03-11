@@ -29,6 +29,7 @@ describe("App", function () {
 	afterEach(function () {
 		document.body.removeChild(eleRoot);
 		document.body.removeChild(speedRoot);
+		document.body.classList.remove("loaded");
 	});
 
 	it("should load the specified activity", function () {
@@ -45,6 +46,11 @@ describe("App", function () {
 			};
 			loadDeferred.resolve(JSON.stringify(response));
 			return startPromise;
+		});
+
+		it("sets a class on the body", function() {
+			// TODO: use an injected container rather than body.
+			expect(document.body.classList).toContain('loaded');
 		});
 
 		it("should show a map in the supplied region", function () {

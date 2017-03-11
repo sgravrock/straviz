@@ -21,6 +21,9 @@
 		}
 		#speed-plot, #elevation-plot { flex: 1; }
 	</style>
+	{{#thumbnail}}
+		<link rel="image_src" href="{{thumbnail}}" />
+	{{/thumbnail}}
 </head>
 <body>
 	<div id="map"></div>
@@ -37,5 +40,8 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.2.1/metricsgraphics.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key={{MAPS-APIKEY}}"></script>
 	<script src="minibikemaps.js"></script>
-	<script src="boot.js"></script>
+	<script>
+		var map = document.getElementById("map");
+		new App(loadUrl, map, "#elevation-plot", "#speed-plot").start({{ACTIVITY_ID}});
+	</script>
 </body>

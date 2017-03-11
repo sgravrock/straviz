@@ -10,10 +10,9 @@ apikey=`tr -d '\n' < maps-apikey`
 [ -z "$apikey" ] && die "Put your Google Maps API key in maps-apikey."
 [ -f node_modules/.bin/browserify ] || npm update
 mkdir -p target
-sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.html > target/index.html
+sed "s/{{MAPS-APIKEY}}/$apikey/" < src/index.tmpl > target/index.tmpl
 node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
-cp src/boot.js target
 
-cp fetchmerge.cgi straviz.json target
+cp index.cgi fetchmerge.cgi straviz.json target
 
 jshint src/*.js test/spec/*.js 
