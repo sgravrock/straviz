@@ -9,7 +9,7 @@ describe("loadUrl", function () {
 		};
 
 		spyOn(window, "XMLHttpRequest").and.returnValue(xhr);
-		promise = loadUrl("someurl");
+		promise = MBM.loadUrl("someurl");
 	});
 
 	it("returns an unresolved promise", function (done) {

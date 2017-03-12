@@ -4,7 +4,7 @@ describe("Map", function () {
 
 	beforeEach(function () {
 		mapRegion = document.createElement("div");
-		map = new Map(mapRegion, { lat: 47.5, lng: -122.3 }, false);
+		map = new MBM.Map(mapRegion, { lat: 47.5, lng: -122.3 }, false);
 	});
 
 	it("should create a Google Maps instance", function () {

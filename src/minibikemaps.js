@@ -1,7 +1,7 @@
 (function () {
 	require("es6-promise").polyfill(); // for phantomjs
-
-	window.App = function (loader, mapRegion, elevationSelector, speedSelector) {
+	
+	var App = function (loader, mapRegion, elevationSelector, speedSelector) {
 		this._loader = loader;
 		this._mapRegion = mapRegion;
 		this._elevationSelector = elevationSelector;
@@ -99,7 +99,7 @@
 		this._map.hideMarker();
 	};
 
-	window.Map = function (parentEl, center, isThumbnail) {
+	var Map = function (parentEl, center, isThumbnail) {
 		this._map = new google.maps.Map(parentEl, {
 			disableDefaultUI: isThumbnail,
 			center: center,
@@ -154,7 +154,7 @@
 		google.maps.event.addListenerOnce(this._map, 'idle', callback);
 	};
 
-	window.loadUrl = function (url) {
+	var loadUrl = function (url) {
 		return new Promise(function (resolve, reject) {
 			var xhr = new XMLHttpRequest();
 
@@ -175,7 +175,7 @@
 		});
 	};
 
-	window.Track = function (points) {
+	var Track = function (points) {
 		this.points = points;
 	};
 
@@ -240,7 +240,7 @@
 		}
 	};
 
-	window.readStreams = function (streams) {
+	var readStreams = function (streams) {
 		var points = [];
 
 		for (i = 0; i < streams.time.length; i++) {
@@ -256,5 +256,12 @@
 		calculateDistances(points);
 
 		return new Track(points);
+	};
+
+	window.MBM = {
+		App: App,
+		Map: Map,
+		readStreams: readStreams,
+		loadUrl: loadUrl,
 	};
 }());

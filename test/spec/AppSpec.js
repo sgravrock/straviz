@@ -22,7 +22,7 @@ describe("App", function () {
 		speedRoot = document.createElement("div");
 		speedRoot.id = "speed-graph";
 		document.body.appendChild(speedRoot);
-		subject = new App(loader, mapRegion, eleSelector, speedSelector);
+		subject = new MBM.App(loader, mapRegion, eleSelector, speedSelector);
 		startPromise = subject.start("12345");
 	});
 

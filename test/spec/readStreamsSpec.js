@@ -8,7 +8,7 @@ describe("readStreams", function () {
 			velocity_smooth: [6.3, 6.9],
 			altitude: [15.1, 8.2]
 		};
-		var track = readStreams(input);
+		var track = MBM.readStreams(input);
 		expect(track.points.length).toEqual(2);
 		expect(track.points[0].lat).toEqual(47.62);
 		expect(track.points[0].lon).toEqual(-122.351);
@@ -32,7 +32,7 @@ describe("readStreams", function () {
 				[38.008530000, -122.495070000]
 			],
 		};
-		var track = readStreams(input);
+		var track = MBM.readStreams(input);
 		expect(track.bounds()).toEqual({
 			minLat: 38.00853,
 			minLon: -122.49507,
@@ -52,7 +52,7 @@ describe("readStreams", function () {
 				[47.88, -122.13]
 			]
 		};
-		var points = readStreams(input).points;
+		var points = MBM.readStreams(input).points;
 		expect(points[0].distance).toEqual(0);
 		expect(points[1].distance).toEqual(1.81);
 		expect(points[2].distance).toEqual(23.4);
