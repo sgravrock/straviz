@@ -25,9 +25,8 @@ except KeyError:
 	sys.stderr.write("Couldn't find an activity parameter in url: %s\n" % url)
 	exit(1)
 
-with tempfile.NamedTemporaryFile(suffix=".png") as f:
-	url += "&view=thumbnail"
-	subprocess.run(["node_modules/.bin/phantomjs", "rasterize.js", url, f.name], check=True)
-	subprocess.run(["chmod", "644", f.name])
-	dest = "%s/thumbs/%s.png" % (deploy_dest(), activity_id)
-	subprocess.run(["scp", "-p", f.name, dest], check=True)
+src = "target/thumbs/%s.png" % activity_id
+subprocess.run(["./generate-thumbnail", url], check=True)
+subprocess.run(["chmod", "644", src])
+dest = "%s/thumbs/%s.png" % (deploy_dest(), activity_id)
+subprocess.run(["scp", "-p", src, dest], check=True)

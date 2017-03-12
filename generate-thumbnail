@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+
+import sys
+import urllib.parse
+import subprocess
+
+
+if len(sys.argv) != 2:
+	sys.stderr.write("Usage: %s activity-url]\n" % sys.argv[0])
+	exit(1)
+
+url = sys.argv[1]
+qs = urllib.parse.urlparse(url).query
+
+try:
+	activity_id = urllib.parse.parse_qs(qs)['activity'][0]
+except KeyError:
+	sys.stderr.write("Couldn't find an activity parameter in url: %s\n" % url)
+	exit(1)
+
+url += "&view=thumbnail"
+dest = "target/thumbs/%s.png" % activity_id
+subprocess.run(["node_modules/.bin/phantomjs", "rasterize.js", url, dest], check=True)
+print("Wrote thumbnail to %s" % dest)
