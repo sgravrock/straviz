@@ -24,10 +24,11 @@
 			})
 			.then(function (json) {
 				var track = readStreams(JSON.parse(json));
-				that.showMap(track, isThumbnail);
+				that.showMap(track, isThumbnail, function() {
+					document.body.classList.add("loaded");
+				});
 				that.showElevationGraph(track);
 				that.showSpeedGraph(track);
-				document.body.classList.add("loaded");
 			})
 			.catch(function (error) {
 				console.error(error);
@@ -35,7 +36,7 @@
 			});
 	};
 
-	App.prototype.showMap = function (track, isThumbnail) {
+	App.prototype.showMap = function (track, isThumbnail, onload) {
 		var center = {
 			lat: 47.598,
 			lng: -122.33
@@ -43,6 +44,10 @@
 		this._map = new Map(this._mapRegion, center, isThumbnail);
 		this._map.fitBounds(track.bounds());
 		this._map.showLine(track.points);
+
+		if (onload) {
+			this._map.onIdle(onload);
+		}
 	};
 
 	App.prototype.showElevationGraph = function (track) {
@@ -138,6 +143,10 @@
 	Map.prototype.hideMarker = function (point) {
 		this._marker.setMap(null);
 		this._marker = null;
+	};
+
+	Map.prototype.onIdle = function(callback) {
+		google.maps.event.addListenerOnce(this._map, 'idle', callback);
 	};
 
 	window.loadUrl = function (url) {

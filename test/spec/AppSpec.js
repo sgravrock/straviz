@@ -48,15 +48,21 @@ describe("App", function () {
 			return startPromise;
 		});
 
-		it("sets a class on the body", function() {
-			// TODO: use an injected container rather than body.
-			expect(document.body.classList).toContain('loaded');
-		});
-
 		it("should show a map in the supplied region", function () {
 			var map = google.maps.latestMap;
 			expect(Map).toBeTruthy();
 			expect(map.parent).toBe(mapRegion);
+		});
+
+		describe("After the map loads", function() {
+			beforeEach(function() {
+				google.maps.latestMap.listeners.idle();
+			});
+
+			it("sets a class on the body", function() {
+				// TODO: use an injected container rather than body.
+				expect(document.body.classList).toContain('loaded');
+			});
 		});
 
 		it("should show the track on the map", function () {

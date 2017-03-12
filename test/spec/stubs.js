@@ -4,6 +4,7 @@
 			Map: function (parent, config) {
 				this.parent = parent;
 				this.config = config;
+				this.listeners = {};
 
 				this.fitBounds = function (bounds) {
 					this.bounds = bounds;
@@ -38,6 +39,11 @@
 			},
 			MapTypeId: {
 				TERRAIN: "TERRAIN"
+			},
+			event: {
+				addListenerOnce: function(map, event, listener) {
+					map.listeners[event] = listener;
+				}
 			}
 		}
 	};

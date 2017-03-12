@@ -117,9 +117,9 @@ if (system.args.length < 3 || system.args.length > 5) {
                 });
             }, function() {
                 setTimeout(function() {
-                page.render(output);
-                phantom.exit();
-                });
+                    page.render(output);
+                    phantom.exit();
+                }, 1000);
             }, 10 * 1000);
         }
     });
