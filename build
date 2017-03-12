@@ -7,7 +7,7 @@ die() {
 
 [ -f node_modules/.bin/browserify ] || npm update
 mkdir -p target
-cp src/index.tmpl target/index.tmpl
+cp src/index.tmpl src/loading.gif target
 node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
 
 cp index.cgi fetchmerge.cgi straviz.ini target

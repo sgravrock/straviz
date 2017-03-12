@@ -11,6 +11,22 @@
 			padding: 0;
 		}
 
+		#loading-indicator {
+			display: flex;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 1;
+			align-items: center;
+			justify-content: center;
+			background: white;
+		}
+
+		.loaded #loading-indicator { display: none; }
+
+
 		#map { flex: 1 }
 
 		.plot { 
@@ -48,6 +64,9 @@
 	{{/thumbnail}}
 </head>
 <body>
+	<div id="loading-indicator">
+		<img src="loading.gif" alt="Loading" width="66" height="66">
+	</div>
 	<div id="map"></div>
 	<div class="plot">
 		<div class="y-label">Elevation<br>(meters)</div>
