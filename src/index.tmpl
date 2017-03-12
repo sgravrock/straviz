@@ -30,15 +30,18 @@
 		}
 
 		.y-label {
-			flex: 0;
-			margin-top: 75px;
-			margin-right: 25px;
+			width: 130px;
+			padding-top: 75px;
 			/* Match metricsgraphics X axis label font */
 			font-size: 12.8px;
 			opacity: 0.6;
 			text-transform: uppercase;
 		}
-		#speed-plot, #elevation-plot { flex: 1; }
+
+		#speed-plot, #elevation-plot {
+			flex: 1;
+			margin-left: -75px;
+		}
 	</style>
 	{{#thumbnail}}
 		<link rel="image_src" href="{{thumbnail}}" />
