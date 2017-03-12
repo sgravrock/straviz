@@ -1,7 +1,7 @@
 describe("App", function () {
 	"use strict";
-	var subject, loader, loadDeferred, mapRegion, eleSelector, speedSelector,
-			startPromise, map, eleRoot, speedRoot;
+	var subject, loader, loadDeferred, startPromise,
+			dom, mapRegion, eleRegion, speedRegion;
 
 	var Deferred = function () {
 		this.promise = new Promise(function (resolve, reject) {
@@ -13,22 +13,21 @@ describe("App", function () {
 	beforeEach(function () {
 		loadDeferred = new Deferred();
 		loader = jasmine.createSpy("loader").and.returnValue(loadDeferred.promise);
-		mapRegion = document.createElement("div");
-		eleSelector = "#ele-graph";
-		eleRoot = document.createElement("div");
-		eleRoot.id = "ele-graph";
-		document.body.appendChild(eleRoot);
-		speedSelector = "#speed-graph";
-		speedRoot = document.createElement("div");
-		speedRoot.id = "speed-graph";
-		document.body.appendChild(speedRoot);
-		subject = new MBM.App(loader, mapRegion, eleSelector, speedSelector);
+
+		dom = document.createElement("div");
+		dom.innerHTML = '<div id="map"></div><div id="elevation-plot"></div>' +
+				'<div id="speed-plot"></div>';
+		mapRegion = dom.querySelector("#map");
+		eleRegion = dom.querySelector("#elevation-plot");
+		speedRegion = dom.querySelector("#speed-plot");
+		// metricsgraphics requires the graph roots to be in the page DOM
+		document.body.appendChild(dom);
+		subject = new MBM.App(loader, dom);
 		startPromise = subject.start("12345");
 	});
 
 	afterEach(function () {
-		document.body.removeChild(eleRoot);
-		document.body.removeChild(speedRoot);
+		document.body.removeChild(dom);
 		document.body.classList.remove("loaded");
 	});
 
@@ -60,9 +59,8 @@ describe("App", function () {
 				google.maps.latestMap.listeners.idle();
 			});
 
-			it("sets a class on the body", function() {
-				// TODO: use an injected container rather than body.
-				expect(document.body.classList).toContain('loaded');
+			it("sets a class on the root node", function() {
+				expect(dom.classList).toContain('loaded');
 			});
 		});
 
@@ -87,7 +85,7 @@ describe("App", function () {
 		it("should show an elevation plot", function () {
 			var config = MG.configs[0];
 			expect(config).toBeTruthy("Elevation plot wasn't created");
-			expect(config.target).toEqual("#ele-graph");
+			expect(config.target).toEqual("#elevation-plot");
 			expect(config.x_accessor).toEqual("distance");
 			expect(config.y_accessor).toEqual("elevation");
 			expect(config.data.length).toEqual(2);
@@ -100,7 +98,7 @@ describe("App", function () {
 		it("should show a speed plot", function () {
 			var config = MG.configs[1];
 			expect(config).toBeTruthy("Speed plot wasn't created");
-			expect(config.target).toEqual("#speed-graph");
+			expect(config.target).toEqual("#speed-plot");
 			expect(config.x_accessor).toEqual("distance");
 			expect(config.y_accessor).toEqual("MPH");
 			expect(config.data.length).toEqual(2);

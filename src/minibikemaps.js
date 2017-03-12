@@ -1,11 +1,12 @@
 (function () {
 	require("es6-promise").polyfill(); // for phantomjs
 	
-	var App = function (loader, mapRegion, elevationSelector, speedSelector) {
+	var App = function (loader, dom) {
 		this._loader = loader;
-		this._mapRegion = mapRegion;
-		this._elevationSelector = elevationSelector;
-		this._speedSelector = speedSelector;
+		this._dom = dom;
+		this._mapRegion = dom.querySelector("#map");
+		this._elevationSelector = "#elevation-plot";
+		this._speedSelector = "#speed-plot";
 	};
 
 	App.prototype.start = function (activityId) {
@@ -13,7 +14,7 @@
 		var isThumbnail = window.location.search.indexOf("view=thumbnail") !== -1;
 
 		if (isThumbnail) {
-			document.body.classList.add("thumbnail");
+			this._dom.classList.add("thumbnail");
 		}
 
 		return that._loader("fetchmerge.cgi?activity=" + activityId)
@@ -25,7 +26,7 @@
 			.then(function (json) {
 				var track = readStreams(JSON.parse(json));
 				that.showMap(track, isThumbnail, function() {
-					document.body.classList.add("loaded");
+					that._dom.classList.add("loaded");
 				});
 
 				if (!isThumbnail) {
