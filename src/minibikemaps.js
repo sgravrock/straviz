@@ -27,8 +27,11 @@
 				that.showMap(track, isThumbnail, function() {
 					document.body.classList.add("loaded");
 				});
-				that.showElevationGraph(track);
-				that.showSpeedGraph(track);
+
+				if (!isThumbnail) {
+					that.showElevationGraph(track);
+					that.showSpeedGraph(track);
+				}
 			})
 			.catch(function (error) {
 				console.error(error);
@@ -141,8 +144,10 @@
 	};
 
 	Map.prototype.hideMarker = function (point) {
-		this._marker.setMap(null);
-		this._marker = null;
+		if (this._marker) {
+			this._marker.setMap(null);
+			this._marker = null;
+		}
 	};
 
 	Map.prototype.onIdle = function(callback) {
