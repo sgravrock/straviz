@@ -42,6 +42,7 @@ describe("App", function () {
 			var response = {
 				time: [205, 625],
 				latlng: [[47.62, -122.351], [47.598, -122.33]],
+				velocity_smooth: [6.9, 5.3],
 				altitude: [15.1, 8.2]
 			};
 			loadDeferred.resolve(JSON.stringify(response));
@@ -101,12 +102,12 @@ describe("App", function () {
 			expect(config).toBeTruthy("Speed plot wasn't created");
 			expect(config.target).toEqual("#speed-graph");
 			expect(config.x_accessor).toEqual("distance");
-			expect(config.y_accessor).toEqual("speed");
+			expect(config.y_accessor).toEqual("MPH");
 			expect(config.data.length).toEqual(2);
 			expect(config.data[0].distance).toEqual(0);
-			expect(config.data[0].speed).toEqual(0);
+			expect(config.data[0].MPH).toBeCloseTo(15.43, 2);
 			expect(config.data[1].distance).toBeCloseTo(1.81, 2);
-			expect(config.data[1].speed).toBeCloseTo(7.82, 2);
+			expect(config.data[1].MPH).toBeCloseTo(11.86, 2);
 		});
 
 		describe("When the user mouses over either plot", function () {

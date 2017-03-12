@@ -79,7 +79,7 @@
 			target: this._speedSelector,
 			x_accessor: "distance",
 			x_label: "Distance (miles)",
-			y_accessor: "speed",
+			y_accessor: "MPH",
 			interpolate: "monotone",
 			linked: true,
 			linked_format: "%Y-%m-%d-%H-%M-%S",
@@ -235,32 +235,6 @@
 		}
 	};
 
-	var previousSpeedPoint = function (points, start) {
-		var i;
-
-		for (i = start - 1; i >= 0; i--) {
-			if (points[i].distance < points[start].distance) {
-				return points[i];
-			}
-		}
-
-		return points[start - 1];
-	};
-
-	var calculateSpeed = function (points) {
-		var KalmanFilter = require("kalmanjs").default;
-		var filter = new KalmanFilter({ R: 0.05, Q: 3});
-		var i, hours, prev, rawSpeed;
-		points[0].speed = filter.filter(0);
-
-		for (i = 1; i < points.length; i++) {
-			prev = previousSpeedPoint(points, i);
-			hours = (points[i].time - prev.time) / (60 * 60);
-			rawSpeed = (points[i].distance - prev.distance) / hours;
-			points[i].speed = filter.filter(rawSpeed);
-		}
-	};
-
 	window.readStreams = function (streams) {
 		var points = [];
 
@@ -269,12 +243,12 @@
 				lat: streams.latlng[i][0],
 				lon: streams.latlng[i][1],
 				elevation: streams.altitude[i],
-				time: streams.time[i]
+				time: streams.time[i],
+				MPH: streams.velocity_smooth[i] * 2.2369363
 			});
 		}
 
 		calculateDistances(points);
-		calculateSpeed(points);
 
 		return new Track(points);
 	};
