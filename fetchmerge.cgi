@@ -26,6 +26,9 @@ def merge(responses):
 			result[stream['type']] = stream['data']
 	return result
 
+def hide_access_token(url):
+	return re.sub('access_token=[^&]*', 'access_token=[redacted]', url)
+
 form = cgi.FieldStorage()
 
 if "activity" not in form:
@@ -49,7 +52,8 @@ for i in range(0, len(responses)):
 		print("Status: 500 Internal Server Error")
 		print("Content-type: text/plain")
 		print()
-		print("Received a %d response for %s" % (responses[i].status_code, urls[i]))
+		url = hide_access_token(urls[i])
+		print("Received a %d response for %s" % (responses[i].status_code, url))
 		exit()
 
 result = merge(responses)
