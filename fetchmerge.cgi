@@ -6,6 +6,7 @@ import os
 import cgi
 import configparser
 import json
+import re
 
 sys.path.insert(0, os.path.join(os.getcwd(), "lib"))
 import grequests
