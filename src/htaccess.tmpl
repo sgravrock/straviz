@@ -1,0 +1,8 @@
+<Files "straviz.ini">
+Order Allow,Deny
+Deny from all
+</Files>
+
+RewriteEngine on
+RewriteRule ^([0-9]+)/$ {{URL_BASE_PATH}}/index.html?activity=$1
+RewriteRule ^([0-9]+)/thumbnail.png$ {{URL_BASE_PATH}}/thumbs/$1.png

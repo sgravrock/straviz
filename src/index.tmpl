@@ -59,10 +59,11 @@
 			margin-left: -75px;
 		}
 	</style>
+	<link rel="image_src" href="thumbnail.png" />
 </head>
 <body>
 	<div id="loading-indicator">
-		<img src="loading.gif" alt="Loading" width="66" height="66">
+		<img src="../loading.gif" alt="Loading" width="66" height="66">
 	</div>
 	<div id="map"></div>
 	<div class="plot">
@@ -77,8 +78,8 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/metrics-graphics/2.15.6/metricsgraphics.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}"></script>
-	<script src="minibikemaps.js"></script>
+	<script src="../minibikemaps.js"></script>
 	<script>
-		new MBM.App(MBM.loadUrl, document.body).start(window.location.search);
+		new MBM.App(MBM.loadUrl, document.body).start(window.location);
 	</script>
 </body>

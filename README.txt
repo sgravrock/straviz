@@ -15,6 +15,6 @@ $ npm install
 
 7. Run the dev server: $ ./devserver
 
-8. Visit http://localhost:8000/?activity=<an activity ID>
+8. Visit http://localhost:8000/<an activity ID>/
 
 9. To deploy via SCP, set deploy_dest in straviz.ini and run this: $ ./deploy

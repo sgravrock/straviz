@@ -24,23 +24,23 @@ describe("App", function () {
 	});
 
 	it("should load streams for the activity specified in the URL", function () {
-		subject.start("?activity=12345");
+		subject.start({pathname: "/some/path/12345/", search: ""});
 		expect(loader).toHaveBeenCalledWith(
-			"stream.cgi?activity=12345&stream=time"
+			"../stream.cgi?activity=12345&stream=time"
 		);
 		expect(loader).toHaveBeenCalledWith(
-			"stream.cgi?activity=12345&stream=latlng"
+			"../stream.cgi?activity=12345&stream=latlng"
 		);
 		expect(loader).toHaveBeenCalledWith(
-			"stream.cgi?activity=12345&stream=velocity_smooth"
+			"../stream.cgi?activity=12345&stream=velocity_smooth"
 		);
 		expect(loader).toHaveBeenCalledWith(
-			"stream.cgi?activity=12345&stream=altitude"
+			"../stream.cgi?activity=12345&stream=altitude"
 		);
 	});
 
 	it("should show an error when there is no activity parameter", function () {
-		subject.start("");
+		subject.start({pathname: "/does/not/end/with/number", search: ""});
 		expect(dom.textContent).toEqual("Missing required activity parameter.");
 	});
 
@@ -70,7 +70,7 @@ describe("App", function () {
 					{ type: "distance", data: [1, 2] },
 					{ type: "altitude", data: [15.1, 8.2] },
 				])));
-			return subject.start("?activity=12345");
+			return subject.start({pathname: "/12345/", search: ""});
 		});
 
 		it("should show a map in the supplied region", function () {
@@ -179,7 +179,7 @@ describe("App", function () {
 				.and.callFake(function() {
 					return Promise.reject(new Error("nope"));
 				});
-			return subject.start("?activity=12345").then(function () {
+			return subject.start({pathname: "/12345/", search: ""}).then(function () {
 				throw "Unexpected success";
 			}, function () {
 				// Expected

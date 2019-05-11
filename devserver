@@ -1,11 +1,32 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import http.server
 
 class Handler(http.server.CGIHTTPRequestHandler):
+	def parse_request(self):
+		result = super(Handler, self).parse_request()
+		self.rewrite()
+		return result
+
 	def is_cgi(self):
 		return super().is_cgi() and ".cgi" in self.path
+
+	def rewrite(self):
+		index_match = re.match('^/([0-9]+)\/(\?.*)?$', self.path)
+		thumb_match = re.match('^/([0-9]+)/thumbnail.png$', self.path)
+		if index_match is not None:
+			if index_match.groups()[1] is None:
+				self.path = '/index.html?activity=' + index_match.groups()[0]
+			else:
+				self.path = '/index.html' + index_match.groups()[1] + '&activity=' + index_match.groups()[0]
+			print('Rewrote to ' + self.path)
+		elif thumb_match is not None:
+			self.path = '/thumbs/' + thumb_match.groups()[0] + '.png'
+			print('Rewrote to ' + self.path)
+		else:
+			print('Did not rewrite ' + self.path)
 
 os.chdir('target')
 

@@ -9,10 +9,10 @@
 		this._speedSelector = "#speed-plot";
 	};
 
-	App.prototype.start = function (queryString) {
+	App.prototype.start = function (location) {
 		var that = this;
-		var isThumbnail = queryString.indexOf("view=thumbnail") !== -1;
-		var activityId = getActivityId(queryString);
+		var isThumbnail = location.search.indexOf("view=thumbnail") !== -1;
+		var activityId = getActivityId(location);
 
 		if (!activityId) {
 			this._dom.textContent = "Missing required activity parameter.";
@@ -49,7 +49,7 @@
 	function fetchTrack(ajaxGet, activityId) {
 		var streams = ["time", "latlng", "velocity_smooth", "altitude"];
 		var promises = streams.map(function (stream) {
-			return ajaxGet("stream.cgi?activity=" + activityId +
+			return ajaxGet("../stream.cgi?activity=" + activityId +
 				"&stream=" + stream);
 		});
 		return Promise.all(promises)
@@ -126,8 +126,8 @@
 		this._map.hideMarker();
 	};
 
-	function getActivityId(queryString) {
-		var match = queryString.match(/activity=([^&]+)/);
+	function getActivityId(location) {
+		var match = location.pathname.match(/\/([0-9]+)\/$/);
 		return match && match[1];
 	}
 

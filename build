@@ -10,6 +10,11 @@ def maps_apikey():
 	config.read("straviz.ini")
 	return config.get("straviz", "maps_apikey")
 
+def url_base_path():
+	config = configparser.ConfigParser()
+	config.read("straviz.ini")
+	return config.get("straviz", "deploy_url_base_path")
+
 if not os.path.exists('node_modules/.bin/browserify'):
 	subprocess.check_call(['npm', 'update'])
 
@@ -26,4 +31,9 @@ subprocess.check_call('jshint src/*.js test/spec/*.js', shell=True)
 with open('src/index.tmpl') as f:
 	output = f.read().replace('{{MAPS_APIKEY}}', maps_apikey())
 with open('target/index.html', 'w') as f:
+	f.write(output)
+
+with open('src/htaccess.tmpl') as f:
+	output = f.read().replace('{{URL_BASE_PATH}}', url_base_path())
+with open('target/.htaccess', 'w') as f:
 	f.write(output)
