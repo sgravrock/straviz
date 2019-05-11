@@ -1,15 +1,29 @@
-#!/bin/sh -e
+#!/usr/bin/env python3
 
-die() {
-	echo $1 1>&2
-	exit 1
-}
+import os
+import subprocess
+import shutil
+import configparser
 
-[ -f node_modules/.bin/browserify ] || npm update
-mkdir -p target
-cp src/index.tmpl src/loading.gif target
-node_modules/.bin/browserify src/minibikemaps.js -o target/minibikemaps.js
+def maps_apikey():
+	config = configparser.ConfigParser()
+	config.read("straviz.ini")
+	return config.get("straviz", "maps_apikey")
 
-cp index.cgi fetchmerge.cgi straviz.ini target
+if not os.path.exists('node_modules/.bin/browserify'):
+	subprocess.check_call(['npm', 'update'])
 
-jshint src/*.js test/spec/*.js 
+if not os.path.exists('target'):
+	os.mkdir('target')
+
+subprocess.check_call(['node_modules/.bin/browserify', 'src/minibikemaps.js', '-o', 'target/minibikemaps.js'])
+
+for src in ['src/loading.gif', 'stream.cgi', 'straviz.ini']:
+	shutil.copy(src, 'target')
+
+subprocess.check_call('jshint src/*.js test/spec/*.js', shell=True)
+
+with open('src/index.tmpl') as f:
+	output = f.read().replace('{{MAPS_APIKEY}}', maps_apikey())
+with open('target/index.html', 'w') as f:
+	f.write(output)

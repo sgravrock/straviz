@@ -1,30 +1,36 @@
 (function () {
 	require("es6-promise").polyfill(); // for phantomjs
 	
-	var App = function (loader, dom) {
-		this._loader = loader;
+	var App = function (ajaxGet, dom) {
+		this._ajaxGet = ajaxGet;
 		this._dom = dom;
 		this._mapRegion = dom.querySelector("#map");
 		this._elevationSelector = "#elevation-plot";
 		this._speedSelector = "#speed-plot";
 	};
 
-	App.prototype.start = function (activityId) {
+	App.prototype.start = function (queryString) {
 		var that = this;
-		var isThumbnail = window.location.search.indexOf("view=thumbnail") !== -1;
+		var isThumbnail = queryString.indexOf("view=thumbnail") !== -1;
+		var activityId = getActivityId(queryString);
+
+		if (!activityId) {
+			this._dom.textContent = "Missing required activity parameter.";
+			return Promise.reject("Missing required activity parameter.");
+		}
 
 		if (isThumbnail) {
 			this._dom.classList.add("thumbnail");
 		}
 
-		return that._loader("fetchmerge.cgi?activity=" + activityId)
+		return fetchTrack(that._ajaxGet, activityId)
 			.catch(function (error) {
 				that._mapRegion.classList.add("error");
-				that._mapRegion.innerText = "Could not load " + url + ".";
+				that._mapRegion.innerText = "Could not load track.";
 				return Promise.reject(error);
 			})
 			.then(function (json) {
-				var track = readStreams(JSON.parse(json));
+				var track = readStreams(json);
 				that.showMap(track, isThumbnail, function() {
 					that._dom.classList.add("loaded");
 				});
@@ -39,6 +45,26 @@
 				return Promise.reject(error);
 			});
 	};
+
+	function fetchTrack(ajaxGet, activityId) {
+		var streams = ["time", "latlng", "velocity_smooth", "altitude"];
+		var promises = streams.map(function (stream) {
+			return ajaxGet("stream.cgi?activity=" + activityId +
+				"&stream=" + stream);
+		});
+		return Promise.all(promises)
+			.then(function (responses) {
+				var result = {};
+				responses	
+					.map(JSON.parse)
+					.forEach(function (r) {
+						r.forEach(function(stream) {
+							result[stream.type] = stream.data;
+						});
+					});
+				return result;
+			});
+	}
 
 	App.prototype.showMap = function (track, isThumbnail, onload) {
 		var center = {
@@ -99,6 +125,11 @@
 	App.prototype.graphMouseout = function (point, i) {
 		this._map.hideMarker();
 	};
+
+	function getActivityId(queryString) {
+		var match = queryString.match(/activity=([^&]+)/);
+		return match && match[1];
+	}
 
 	var Map = function (parentEl, center, isThumbnail) {
 		this._map = new google.maps.Map(parentEl, {

@@ -1,18 +1,11 @@
 describe("App", function () {
 	"use strict";
-	var subject, loader, loadDeferred, startPromise,
+	var subject, loader,
 			dom, mapRegion, eleRegion, speedRegion;
 
-	var Deferred = function () {
-		this.promise = new Promise(function (resolve, reject) {
-			this.resolve = resolve;
-			this.reject = reject;
-		}.bind(this));
-	};
-
 	beforeEach(function () {
-		loadDeferred = new Deferred();
-		loader = jasmine.createSpy("loader").and.returnValue(loadDeferred.promise);
+		var dummyPromise = new Promise(function() {});
+		loader = jasmine.createSpy("loader").and.returnValue(dummyPromise);
 
 		dom = document.createElement("div");
 		dom.innerHTML = '<div id="map"></div><div id="elevation-plot"></div>' +
@@ -23,7 +16,6 @@ describe("App", function () {
 		// metricsgraphics requires the graph roots to be in the page DOM
 		document.body.appendChild(dom);
 		subject = new MBM.App(loader, dom);
-		startPromise = subject.start("12345");
 	});
 
 	afterEach(function () {
@@ -31,21 +23,54 @@ describe("App", function () {
 		document.body.classList.remove("loaded");
 	});
 
-	it("should load the specified activity", function () {
-		expect(loader).toHaveBeenCalled();
-		expect(loader.calls.argsFor(0)[0]).toMatch(/fetchmerge.cgi\?activity=12345/);
+	it("should load streams for the activity specified in the URL", function () {
+		subject.start("?activity=12345");
+		expect(loader).toHaveBeenCalledWith(
+			"stream.cgi?activity=12345&stream=time"
+		);
+		expect(loader).toHaveBeenCalledWith(
+			"stream.cgi?activity=12345&stream=latlng"
+		);
+		expect(loader).toHaveBeenCalledWith(
+			"stream.cgi?activity=12345&stream=velocity_smooth"
+		);
+		expect(loader).toHaveBeenCalledWith(
+			"stream.cgi?activity=12345&stream=altitude"
+		);
 	});
 
-	describe("When the request succeeds", function () {
+	it("should show an error when there is no activity parameter", function () {
+		subject.start("");
+		expect(dom.textContent).toEqual("Missing required activity parameter.");
+	});
+
+	describe("When all stream requests succeed", function () {
 		beforeEach(function () {
-			var response = {
-				time: [205, 625],
-				latlng: [[47.62, -122.351], [47.598, -122.33]],
-				velocity_smooth: [6.9, 5.3],
-				altitude: [15.1, 8.2]
-			};
-			loadDeferred.resolve(JSON.stringify(response));
-			return startPromise;
+			loader
+				.withArgs(jasmine.stringMatching("stream=time"))
+				.and.returnValue(Promise.resolve(JSON.stringify([
+					{ type: "distance", data: [1, 2] },
+					{ type: "time", data: [205, 625] },
+				])));
+			loader
+				.withArgs(jasmine.stringMatching("stream=latlng"))
+				.and.returnValue(Promise.resolve(JSON.stringify([
+					{ type: "distance", data: [1, 2] },
+					{ type: "latlng", data: [[47.62, -122.351], [47.598, -122.33]] },
+				])));
+			loader
+				.withArgs(jasmine.stringMatching("stream=velocity_smooth"))
+				.and.returnValue(Promise.resolve(JSON.stringify([
+					{ type: "distance", data: [1, 2] },
+					{ type: "velocity_smooth", data: [6.9, 5.3] },
+				])));
+			loader
+				.withArgs(jasmine.stringMatching("stream=altitude"))
+				.and.returnValue(Promise.resolve(JSON.stringify([
+					{ type: "distance", data: [1, 2] },
+					{ type: "altitude", data: [15.1, 8.2] },
+				])));
+			return subject.start("?activity=12345");
 		});
 
 		it("should show a map in the supplied region", function () {
@@ -147,10 +172,14 @@ describe("App", function () {
 		});
 	});
 
-	describe("When the request fails", function () {
+	describe("When any request fails", function () {
 		beforeEach(function () {
-			loadDeferred.reject();
-			return startPromise.then(function () {
+			loader
+				.withArgs(jasmine.stringMatching("stream=latlng"))
+				.and.callFake(function() {
+					return Promise.reject(new Error("nope"));
+				});
+			return subject.start("?activity=12345").then(function () {
 				throw "Unexpected success";
 			}, function () {
 				// Expected

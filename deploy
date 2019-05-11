@@ -8,9 +8,3 @@ echo Deploying to $scpdest
 cd target
 chmod 600 straviz.ini
 scp -r . "$scpdest"
-cd ..
-scp requirements.txt "$scpdest"
-
-if [ "$1" != "--skip-deps" ]; then
-	ssh "$sshdest" "cd \"$destdir\" && pip3 install -r requirements.txt -t lib"
-fi

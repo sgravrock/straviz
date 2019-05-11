@@ -59,9 +59,6 @@
 			margin-left: -75px;
 		}
 	</style>
-	{{#thumbnail}}
-		<link rel="image_src" href="{{thumbnail}}" />
-	{{/thumbnail}}
 </head>
 <body>
 	<div id="loading-indicator">
@@ -82,6 +79,6 @@
 	<script src="https://maps.googleapis.com/maps/api/js?key={{MAPS_APIKEY}}"></script>
 	<script src="minibikemaps.js"></script>
 	<script>
-		new MBM.App(MBM.loadUrl, document.body).start({{ACTIVITY_ID}});
+		new MBM.App(MBM.loadUrl, document.body).start(window.location.search);
 	</script>
 </body>
